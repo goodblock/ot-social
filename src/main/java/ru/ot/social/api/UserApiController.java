@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.annotation.Generated;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
@@ -22,30 +24,35 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ru.ot.social.user.UserAction;
 
 @Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2024-09-05T00:15:48.243770487+03:00[Europe/Moscow]")
 @RestController
 public class UserApiController implements UserApi {
 
     private static final Logger log = LoggerFactory.getLogger(UserApiController.class);
-
     private final ObjectMapper objectMapper;
-
     private final HttpServletRequest request;
+    private final UserAction userAction;
 
     @Autowired
-    public UserApiController(ObjectMapper objectMapper, HttpServletRequest request) {
+    public UserApiController(ObjectMapper objectMapper, HttpServletRequest request, UserAction userAction) {
         this.objectMapper = objectMapper;
         this.request = request;
+        this.userAction = userAction;
     }
 
-    public ResponseEntity<User> userGetIdGet(@Parameter(in = ParameterIn.PATH, description = "Идентификатор пользователя", required=true, schema=@Schema()) @PathVariable("id") String id
-) {
+    public ResponseEntity<User> userGetIdGet(
+            @Parameter(in = ParameterIn.PATH, description = "Идентификатор пользователя", required=true, schema=@Schema())
+            @PathVariable("id") String id) {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("application/json")) {
             try {
-                return new ResponseEntity<User>(objectMapper.readValue("{\n  \"birthdate\" : \"2017-02-01T00:00:00.000+00:00\",\n  \"city\" : \"Москва\",\n  \"second_name\" : \"Фамилия\",\n  \"id\" : \"id\",\n  \"biography\" : \"Хобби, интересы и т.п.\",\n  \"first_name\" : \"Имя\"\n}", User.class), HttpStatus.NOT_IMPLEMENTED);
-            } catch (IOException e) {
+                Optional<User> opUser = userAction.getById(id);
+                return opUser
+                        .map(user -> new ResponseEntity<>(user, HttpStatus.OK))
+                        .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+            } catch (Exception e) {
                 log.error("Couldn't serialize response for content type application/json", e);
                 return new ResponseEntity<User>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
@@ -54,13 +61,15 @@ public class UserApiController implements UserApi {
         return new ResponseEntity<User>(HttpStatus.NOT_IMPLEMENTED);
     }
 
-    public ResponseEntity<InlineResponse2001> userRegisterPost(@Parameter(in = ParameterIn.DEFAULT, description = "", schema=@Schema()) @Valid @RequestBody UserRegisterBody body
-) {
+    public ResponseEntity<InlineResponse2001> userRegisterPost(
+            @Parameter(in = ParameterIn.DEFAULT, description = "", schema=@Schema())
+            @Valid @RequestBody UserRegisterBody body ) {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("application/json")) {
             try {
-                return new ResponseEntity<InlineResponse2001>(objectMapper.readValue("{\n  \"user_id\" : \"e4d2e6b0-cde2-42c5-aac3-0b8316f21e58\"\n}", InlineResponse2001.class), HttpStatus.NOT_IMPLEMENTED);
-            } catch (IOException e) {
+                String id = userAction.register(body);
+                return new ResponseEntity<InlineResponse2001>( new InlineResponse2001().userId(id), HttpStatus.OK);
+            } catch (Exception e) {
                 log.error("Couldn't serialize response for content type application/json", e);
                 return new ResponseEntity<InlineResponse2001>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
