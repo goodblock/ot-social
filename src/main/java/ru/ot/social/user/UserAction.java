@@ -12,17 +12,18 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserAction {
 
-    private final UserService userService;
+    private final UserDbService userDbService;
+    private final UserConverter userConverter;
 
     public String register( UserRegisterBody userRegisterBody ) {
-        UserDb userDb = new UserConverter().toUserDb(userRegisterBody);
-        userService.register(userDb);
+        UserDb userDb = userConverter.toUserDb(userRegisterBody);
+        userDbService.register(userDb);
 
         return userDb.getId();
     }
 
     public Optional<User> getById(String userId) {
-        Optional<UserDb> userDb = userService.getUserById(userId);
-        return userDb.map(e -> new UserConverter().toUser(e));
+        Optional<UserDb> userDb = userDbService.getById(userId);
+        return userDb.map(e -> userConverter.toUser(e));
     }
 }

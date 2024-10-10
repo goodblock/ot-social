@@ -16,14 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserRepository {
 
-    private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedJdbcTemplate;
-
-    public List<UserDb> finAll() {
-        String sql = "select * from \"user\"";
-
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(UserDb.class));
-    }
 
     public UserDb findById(String id) {
         String sql = "select * from \"user\" where id = :id";

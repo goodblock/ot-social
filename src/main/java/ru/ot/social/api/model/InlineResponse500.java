@@ -10,33 +10,25 @@ import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
 import org.springframework.validation.annotation.Validated;
 
-/**
- * InlineResponse500
- */
 @Validated
-@Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2024-09-05T00:15:48.243770487+03:00[Europe/Moscow]")
-
-
+@Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen",
+        date = "2024-09-05T00:15:48.243770487+03:00[Europe/Moscow]")
 public class InlineResponse500   {
   @JsonProperty("message")
-
   private String message = null;
 
   @JsonProperty("request_id")
-
   @JsonInclude(JsonInclude.Include.NON_ABSENT)  // Exclude from JSON if absent
   @JsonSetter(nulls = Nulls.FAIL)    // FAIL setting if the value is null
   private String requestId = null;
 
   @JsonProperty("code")
-
   @JsonInclude(JsonInclude.Include.NON_ABSENT)  // Exclude from JSON if absent
   @JsonSetter(nulls = Nulls.FAIL)    // FAIL setting if the value is null
   private Integer code = null;
 
 
-  public InlineResponse500 message(String message) { 
-
+  public InlineResponse500 message(String message) {
     this.message = message;
     return this;
   }
@@ -45,23 +37,17 @@ public class InlineResponse500   {
    * Описание ошибки
    * @return message
    **/
-  
   @Schema(required = true, description = "Описание ошибки")
-  
   @NotNull
   public String getMessage() {  
     return message;
   }
 
-
-
-  public void setMessage(String message) { 
-
+  public void setMessage(String message) {
     this.message = message;
   }
 
-  public InlineResponse500 requestId(String requestId) { 
-
+  public InlineResponse500 requestId(String requestId) {
     this.requestId = requestId;
     return this;
   }
@@ -70,21 +56,16 @@ public class InlineResponse500   {
    * Идентификатор запроса. Предназначен для более быстрого поиска проблем.
    * @return requestId
    **/
-  
   @Schema(description = "Идентификатор запроса. Предназначен для более быстрого поиска проблем.")
-  
   public String getRequestId() {  
     return requestId;
   }
-
-
 
   public void setRequestId(String requestId) { 
     this.requestId = requestId;
   }
 
-  public InlineResponse500 code(Integer code) { 
-
+  public InlineResponse500 code(Integer code) {
     this.code = code;
     return this;
   }
@@ -93,9 +74,7 @@ public class InlineResponse500   {
    * Код ошибки. Предназначен для классификации проблем и более быстрого решения проблем.
    * @return code
    **/
-  
   @Schema(description = "Код ошибки. Предназначен для классификации проблем и более быстрого решения проблем.")
-  
   public Integer getCode() {  
     return code;
   }

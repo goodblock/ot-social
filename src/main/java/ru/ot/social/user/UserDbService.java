@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserDbService {
 
     private final UserRepository userRepository;
 
@@ -18,7 +18,7 @@ public class UserService {
         userRepository.save(userDb);
     }
 
-    public Optional<UserDb> getUserById(String id ) {
+    public Optional<UserDb> getById(String id) {
         try {
             return Optional.of(userRepository.findById( id ));
         } catch (EmptyResultDataAccessException e) {
