@@ -4,11 +4,15 @@ spring:
 
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://localhost:5430/db
     password: password
-    username: postgres
+    username: user
   flyway:
     enabled: true
+  docker:
+    compose:
+      enabled: true
+      file: compose.yaml
 
 jwt:
   secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
