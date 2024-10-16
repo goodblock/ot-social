@@ -2,7 +2,6 @@ package ru.ot.social.db;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -23,6 +22,18 @@ public class UserRepository {
 
         return namedJdbcTemplate.queryForObject(
                 sql, new MapSqlParameterSource("id", id), new BeanPropertyRowMapper<>(UserDb.class));
+    }
+
+    public List<UserDb> findByPrefixNames(String firstNamePref, String lastNamePref) {
+        String sql = "select * from \"user\" " +
+                "where lower(first_name) like lower(:firstNamePref) " +
+                "and lower(second_name) like lower(:secondNamePref)";
+
+        SqlParameterSource params = new MapSqlParameterSource()
+                .addValue("firstNamePref", firstNamePref + '%')
+                .addValue("secondNamePref", lastNamePref + '%');
+
+        return namedJdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(UserDb.class));
     }
 
     public void save(UserDb userDb) {

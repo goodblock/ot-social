@@ -1,6 +1,5 @@
 package ru.ot.social.api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import ru.ot.social.api.model.InlineResponse2001;
 import ru.ot.social.api.model.User;
@@ -9,7 +8,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.annotation.Generated;
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,7 +31,6 @@ import ru.ot.social.user.UserAction;
 public class UserApiController implements UserApi {
 
     private static final Logger log = LoggerFactory.getLogger(UserApiController.class);
-    private final ObjectMapper objectMapper;
     private final HttpServletRequest request;
     private final UserAction userAction;
 
@@ -81,20 +78,13 @@ public class UserApiController implements UserApi {
             @NotNull @Parameter(
                     in = ParameterIn.QUERY, description = "Условие поиска по фамилии", required=true, schema=@Schema())
             @Valid @RequestParam(value = "last_name", required = true) String lastName) {
+
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("application/json")) {
             try {
-                return new ResponseEntity<List<User>>(
-                        objectMapper.readValue(
-                                "[ {\n  \"birthdate\" : \"2017-02-01T00:00:00.000+00:00\",\n  " +
-                                        "\"city\" : \"Москва\",\n  \"second_name\" : \"Фамилия\",\n  " +
-                                        "\"id\" : \"id\",\n  \"biography\" : \"Хобби, интересы и т.п.\",\n  " +
-                                        "\"first_name\" : \"Имя\"\n}, {\n  " +
-                                        "\"birthdate\" : \"2017-02-01T00:00:00.000+00:00\",\n  " +
-                                        "\"city\" : \"Москва\",\n  \"second_name\" : \"Фамилия\",\n  " +
-                                        "\"id\" : \"id\",\n  \"biography\" : \"Хобби, интересы и т.п.\",\n  " +
-                                        "\"first_name\" : \"Имя\"\n} ]", List.class), HttpStatus.NOT_IMPLEMENTED);
-            } catch (IOException e) {
+                List<User> users = userAction.searchByPrefixNames(firstName, lastName);
+                return new ResponseEntity<>(users, HttpStatus.OK);
+            } catch (Exception e) {
                 log.error("Couldn't serialize response for content type application/json", e);
                 return new ResponseEntity<List<User>>(HttpStatus.INTERNAL_SERVER_ERROR);
             }

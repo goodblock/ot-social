@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.ot.social.db.UserDb;
 import ru.ot.social.db.UserRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,5 +25,9 @@ public class UserDbService {
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
+    }
+
+    public List<UserDb> searchByPrefixNames(String firstNamePref, String secondNamePref) {
+        return userRepository.findByPrefixNames( firstNamePref, secondNamePref );
     }
 }
