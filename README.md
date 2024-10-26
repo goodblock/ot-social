@@ -1,5 +1,24 @@
 # Getting Started
 
+### Примечание к ДЗ №2
+csv-файл монтируется в контейнере (в текущей репе нет, взял из задания https://raw.githubusercontent.com/OtusTeam/highload/master/homework/people.v2.csv)
+файл в конце имеет непонятный символ, надо его удалить и тогда с импортом не должно быть проблем
+```
+volumes:
+  - '/var/lib/postgresql/data'
+  - '/C//Projects/otus/HL/people.v2.csv:/tmp/HL/people.v2.csv'
+```
+далее загружается в таблицу people_v2_csv при помощи flyway вот таким скриптом:
+```sql
+COPY people_v2_csv(fi_names, birthdate, city) 
+FROM '/tmp/HL/people.v2.csv'
+DELIMITER ',';
+```
+
+Данные затем модифицируются средствами БД и укладываются в таблицу user.
+
+
+
 ### Как собрать
 ```shell
 mvn clean build

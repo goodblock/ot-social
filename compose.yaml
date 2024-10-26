@@ -9,5 +9,6 @@ services:
       - 'PGDATA=/var/lib/postgresql/data'
     volumes:
       - '/var/lib/postgresql/data'
+      - '/C//Projects/otus/HL/people.v2.csv:/tmp/HL/people.v2.csv'
     ports:
       - '5430:5432'
